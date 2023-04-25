@@ -36,4 +36,5 @@ const sort = () => {
     obj1.age > obj2.age ? 1 : obj2.age > obj1.age ? -1 : 0
   );
 };
+
 //console.log(sort());
