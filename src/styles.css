@@ -1,0 +1,16 @@
+body {
+  font-family: sans-serif;
+}
+#outer {
+  border: 1px solid red;
+  width: 50%;
+  height: 100px;
+  padding: 10px;
+}
+#inner {
+  border: 1px solid blue;
+  border-radius: 50%;
+  width: 20%;
+  height: 50px;
+  margin: 10px;
+}
