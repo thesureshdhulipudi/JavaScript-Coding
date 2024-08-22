@@ -1,0 +1,102 @@
+import React, { useState, useEffect, useRef } from 'react';
+import Joyride from 'react-joyride';
+
+const TourComponent = () => {
+  const [isTourActive, setIsTourActive] = useState(false);
+  const [highlightedArea, setHighlightedArea] = useState({});
+  const currentStepIndex = useRef(0);
+
+  const steps = [
+    {
+      target: '[data-tour-id="first-step"]',
+      content: 'This is the first step.',
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour-id="second-step"]',
+      content: 'This is the second step.',
+      disableBeacon: true,
+    },
+    // Add more steps as needed
+  ];
+
+  const handleJoyrideCallback = (data) => {
+    const { status, type, index } = data;
+
+    if (type === 'step:before' || type === 'step:after') {
+      currentStepIndex.current = index;
+      updateHighlightedArea();
+    }
+
+    if (status === 'finished' || status === 'skipped') {
+      setIsTourActive(false);
+      removeOverlay();
+    }
+  };
+
+  const updateHighlightedArea = () => {
+    const element = document.querySelector(steps[currentStepIndex.current].target);
+
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      setHighlightedArea({
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+    }
+  };
+
+  const removeOverlay = () => {
+    setHighlightedArea({});
+  };
+
+  useEffect(() => {
+    if (isTourActive) {
+      updateHighlightedArea();
+    }
+  }, [isTourActive]);
+
+  const startTour = () => {
+    setIsTourActive(true);
+  };
+
+  return (
+    <>
+      <button onClick={startTour}>Start Tour</button>
+
+      {isTourActive && (
+        <Joyride
+          steps={steps}
+          continuous={true}
+          showSkipButton={true}
+          showProgress={true}
+          callback={handleJoyrideCallback}
+          disableOverlay={true} // Disable the default overlay
+        />
+      )}
+
+      {isTourActive && (
+        <>
+          <div style={{ ...overlayBaseStyles, top: 0, height: highlightedArea.top }} />
+          <div style={{ ...overlayBaseStyles, top: highlightedArea.top, height: highlightedArea.height, width: highlightedArea.left }} />
+          <div style={{ ...overlayBaseStyles, top: highlightedArea.top, left: highlightedArea.left + highlightedArea.width, height: highlightedArea.height }} />
+          <div style={{ ...overlayBaseStyles, top: highlightedArea.top + highlightedArea.height, height: `calc(100% - ${highlightedArea.top + highlightedArea.height}px)` }} />
+        </>
+      )}
+    </>
+  );
+};
+
+// Overlay styles to cover the entire screen
+const overlayBaseStyles = {
+  position: 'fixed',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust as needed
+  zIndex: 9999, // Ensure it's above other elements
+  width: '100%',
+  left: 0,
+  pointerEvents: 'auto', // Allow the overlay to capture clicks
+};
+
+export default TourComponent;
