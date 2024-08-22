@@ -89,6 +89,15 @@ const TourComponent = () => {
   );
 };
 
+const highlightedAreaStyles = {
+  position: 'absolute',
+  zIndex: 9999, // Ensure it's above the overlay
+  pointerEvents: 'none', // Allow clicks through the overlay
+  boxShadow: '0 0 10px 5px rgba(255, 255, 255, 0.5)', // Optional highlight effect
+  borderRadius: '4px',
+  backgroundColor: '#fff', // To show the highlight clearly
+};
+
 // Overlay styles to cover the entire screen
 const overlayBaseStyles = {
   position: 'fixed',
