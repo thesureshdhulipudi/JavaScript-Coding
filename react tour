@@ -1,0 +1,100 @@
+import React, { useState, useEffect, useRef } from 'react';
+import Joyride from 'react-joyride';
+
+const TourComponent = () => {
+  const [isTourActive, setIsTourActive] = useState(false);
+  const [overlayStyles, setOverlayStyles] = useState({});
+  const currentStepIndex = useRef(0);
+
+  const steps = [
+    {
+      target: '[data-tour-id="first-step"]',
+      content: 'This is the first step.',
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour-id="second-step"]',
+      content: 'This is the second step.',
+      disableBeacon: true,
+    },
+    // Add more steps as needed
+  ];
+
+  const handleJoyrideCallback = (data) => {
+    const { status, type, index } = data;
+
+    if (type === 'step:before' || type === 'step:after') {
+      currentStepIndex.current = index;
+      updateOverlay();
+    }
+
+    if (status === 'finished' || status === 'skipped') {
+      setIsTourActive(false);
+      removeOverlay();
+    }
+  };
+
+  const updateOverlay = () => {
+    const element = document.querySelector(steps[currentStepIndex.current].target);
+
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      setOverlayStyles({
+        clipPath: `polygon(
+          0 0, 0 100%, ${rect.left}px 100%, ${rect.left}px ${rect.top}px,
+          ${rect.right}px ${rect.top}px, ${rect.right}px ${rect.bottom}px,
+          ${rect.left}px ${rect.bottom}px, ${rect.left}px 100%, 100% 100%, 100% 0)`,
+        pointerEvents: 'auto', // Allow clicks only in the clipped area
+      });
+    }
+  };
+
+  const removeOverlay = () => {
+    setOverlayStyles({});
+  };
+
+  useEffect(() => {
+    if (isTourActive) {
+      updateOverlay();
+    }
+  }, [isTourActive]);
+
+  const startTour = () => {
+    setIsTourActive(true);
+  };
+
+  return (
+    <>
+      <button onClick={startTour}>Start Tour</button>
+
+      {isTourActive && (
+        <Joyride
+          steps={steps}
+          continuous={true}
+          showSkipButton={true}
+          showProgress={true}
+          callback={handleJoyrideCallback}
+          disableOverlay={true} // Disable the default overlay
+        />
+      )}
+
+      {isTourActive && (
+        <div style={{ ...overlayBaseStyles, ...overlayStyles }} />
+      )}
+    </>
+  );
+};
+
+// Overlay styles to cover the entire screen
+const overlayBaseStyles = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust as needed
+  zIndex: 9999, // Ensure it's above other elements
+  pointerEvents: 'none', // Prevent interaction with the rest of the page
+};
+
+export default TourComponent;
