@@ -34,6 +34,24 @@ const TourComponent = () => {
     }
   };
 
+const scrollToElement = ({ selector, offset = 0, behavior = 'smooth' }) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({
+        top: elementPosition,
+        behavior: behavior
+      });
+    }
+  };
+if (type === 'step:after') {
+      scrollToElement({
+        selector: step.target, // Use the target from the step
+        offset: 50, // Optional: Adjust this based on your design
+        behavior: 'smooth'
+      });
+    }
+
   const updateHighlightedArea = () => {
     const element = document.querySelector(steps[currentStepIndex.current].target);
 
