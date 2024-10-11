@@ -127,3 +127,31 @@ const overlayBaseStyles = {
 };
 
 export default TourComponent;
+
+
+/* Custom styles for the modal to make it full-screen */
+.modal-body-fullscreen {
+  width: 100vw;  /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body-fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  border: none; /* Removes border around iframe */
+}
+
+.vds-modal__content {
+  width: 100vw !important;  /* Force modal content to full width */
+  height: 100vh !important; /* Force modal content to full height */
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  padding: 0 !important;    /* Remove any default padding */
+  overflow: hidden;         /* Ensure modal content does not overflow */
+}
+
