@@ -155,3 +155,40 @@ export default TourComponent;
   overflow: hidden;         /* Ensure modal content does not overflow */
 }
 
+
+
+
+
+----------------------
+
+import React, { useState } from 'react';
+import { DateRangePicker } from 'react-dates';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+
+const MyDateRangePicker = () => {
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [focusedInput, setFocusedInput] = useState(null);
+
+    return (
+        <DateRangePicker
+            startDate={startDate} 
+            startDateId="your_unique_start_date_id" 
+            endDate={endDate} 
+            endDateId="your_unique_end_date_id" 
+            onDatesChange={({ startDate, endDate }) => {
+                setStartDate(startDate);
+                setEndDate(endDate);
+            }}
+            focusedInput={focusedInput} 
+            onFocusChange={focusedInput => setFocusedInput(focusedInput)} 
+            isOutsideRange={() => false} // Allow all dates to be selectable
+        />
+    );
+};
+
+export default MyDateRangePicker;
+
+
+--------------
