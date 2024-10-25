@@ -192,3 +192,46 @@ export default MyDateRangePicker;
 
 
 --------------
+
+
+import React, { useState } from 'react';
+import { DateRangePicker } from 'rsuite';
+import 'rsuite/dist/rsuite.min.css';
+const DateRangePickerSingleInput = () => {
+    const [dateRange, setDateRange] = useState([new Date(), new Date()]); // Initialize with today's date
+
+  const handleChange = (value) => {
+    // Only update state if value is valid
+    if (value && value.length === 2) {
+      setDateRange(value);
+    } else {
+      // If the value is cleared, set to an empty array
+      setDateRange([null, null]);
+    }
+  };
+  const disablePreviousDates = (date) => {
+    const today = new Date();
+    return date < today.setHours(0, 0, 0, 0); // Disable dates before today
+  };
+
+  return (
+    <div>
+      <h4>Select Date Range</h4>
+      <DateRangePicker
+        value={dateRange}
+        onChange={handleChange}
+        format="yyyy-MM-dd" // Customize the format as needed
+        // Remove default static ranges
+        ranges={[]} // This will remove all static ranges
+        disabledDate={disablePreviousDates} // Disable previous dates
+      />
+      <div>
+        <p>Selected Start Date: {dateRange[0] ? dateRange[0].toLocaleDateString() : 'None'}</p>
+        <p>Selected End Date: {dateRange[1] ? dateRange[1].toLocaleDateString() : 'None'}</p>
+      </div>
+    </div>
+  );
+}
+export default DateRangePickerSingleInput;
+
+-----------------------
